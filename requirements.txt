@@ -4,6 +4,9 @@ matplotlib
 seaborn
 scikit-learn
 fastapi
-uvicorn
+uvicorn[standard]
 joblib
 jupyter
+pydantic
+prophet
+python-multipart

@@ -1,35 +1,51 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from datetime import datetime
+import traceback
 
 from src.pipeline.predict_pipeline import predict_price
-from src.api.schemas import PriceRequest
+from src.core.contracts import DemandRequest, PricingResponse
 
-app = FastAPI(title="Demand-Based Pricing API")
+app = FastAPI(title="PriceIQ - Demand-Based Pricing API")
 
-@app.get("/")
-def root():
+@app.get("/health")
+def health_check():
     return {
         "status": "ok",
         "message": "Demand-based pricing API is running"
     }
 
-@app.post("/recommend-price")
-def recommend_price(payload: PriceRequest):
-    pricing_config = {
-        "low_threshold": 80,
-        "high_threshold": 150
-    }
+@app.get("/")
+def root():
+    return health_check()
 
-    result = predict_price(
-        input_date=payload.date,
-        base_price=payload.base_price,
-        capacity=payload.capacity,
-    )
+@app.post("/recommend-price", response_model=PricingResponse)
+def recommend_price(payload: DemandRequest):
+    # Enforce maximum forecast horizon (Dataset ends 2026-08-20)
+    MAX_DATE = datetime(2026, 9, 20).date()
+    if payload.target_date > MAX_DATE:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Forecast horizon exceeded. Maximum allowed date is {MAX_DATE}."
+        )
 
-    # ADD capacity info to response (no pricing change yet)
-    result["capacity"] = payload.capacity
-    result["occupancy_ratio"] = round(
-        result["predicted_demand"] / payload.capacity, 2
-    )
+    try:
+        # We use input payload to predict price
+        result = predict_price(
+            input_date=payload.target_date,
+            base_price=payload.base_price,
+            capacity=payload.capacity,
+            context=payload.context
+        )
 
-    return result
+        return PricingResponse(
+            target_date=payload.target_date,
+            predicted_demand=result["predicted_demand"],
+            occupancy_ratio=result["occupancy_ratio"],
+            recommended_price=result["recommended_price"],
+            confidence=result.get("confidence", "low"),
+            explanation=result.get("explanation", []),
+        )
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+

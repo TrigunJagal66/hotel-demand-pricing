@@ -40,7 +40,8 @@ def rule_based_price(
 def occupancy_based_price(
     predicted_demand,
     base_price,
-    capacity
+    capacity,
+    context=None
 ):
     occupancy_ratio = predicted_demand / capacity
     explanation = []
@@ -62,6 +63,19 @@ def occupancy_based_price(
         price = base_price
         explanation.append("Demand and capacity are balanced")
         explanation.append("Base price retained")
+
+    # Connect Context Business Rules!
+    if context:
+        event = context.get("event", "").lower()
+        weather = context.get("weather", "").lower()
+        
+        if event in ["concert", "festival", "holiday"]:
+            price = price * 1.15
+            explanation.append(f"Context Override: +15% surge applied for local event '{event}'")
+            
+        if weather in ["storm", "hurricane", "blizzard"]:
+            price = price * 0.90
+            explanation.append(f"Context Override: -10% discount applied due to severe weather '{weather}'")
 
     # Confidence (simple, explainable)
     if occupancy_ratio > 0.9 or occupancy_ratio < 0.5:

@@ -1,4 +1,4 @@
-from src.pricing.elasticity import adjust_demand_for_price
+from src.pricing.pricing_engine import adjust_demand_for_price
 
 class PricingOptimizer:
 

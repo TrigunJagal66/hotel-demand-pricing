@@ -4,7 +4,6 @@ from datetime import date
 
 
 class DemandRequest(BaseModel):
-    entity_id: str                  # e.g. "uber_blr_zone_12"
     target_date: date
     capacity: int
     base_price: float
@@ -19,7 +18,6 @@ class DemandForecast(BaseModel):
 
 
 class PricingResponse(BaseModel):
-    entity_id: str
     target_date: date
     predicted_demand: int
     occupancy_ratio: float
