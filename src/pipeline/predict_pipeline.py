@@ -9,12 +9,28 @@ from src.pricing.pricing_engine import occupancy_based_price
 def get_project_root():
     return Path(__file__).resolve().parent.parent.parent
 
-def load_demand_data():
-    """Load processed daily demand data."""
+MODEL = None
+DEMAND_DATA = None
+
+def initialize_pipeline():
+    """Load model and data into memory on startup."""
+    global MODEL, DEMAND_DATA
+    
+    # Load model
+    model_path = get_project_root() / "models_saved" / "demand_model.pkl"
+    if model_path.exists():
+        MODEL = joblib.load(model_path)
+    else:
+        MODEL = None
+        
+    # Load dataset
     data_path = get_project_root() / "data" / "processed" / "daily_demand.csv"
-    df = pd.read_csv(data_path)
-    df["arrival_date"] = pd.to_datetime(df["arrival_date"])
-    return df
+    if data_path.exists():
+        df = pd.read_csv(data_path)
+        df["arrival_date"] = pd.to_datetime(df["arrival_date"])
+        DEMAND_DATA = df
+    else:
+        DEMAND_DATA = pd.DataFrame(columns=["arrival_date", "bookings"])
 
 
 # -----------------------------
@@ -58,15 +74,11 @@ def prepare_features(df, target_date):
 # Demand prediction
 # -----------------------------
 def predict_demand(features):
-    model_path = get_project_root() / "models_saved" / "demand_model.pkl"
-    if not model_path.exists():
-        # Create models_saved folder just in case
-        model_path.parent.mkdir(parents=True, exist_ok=True)
-        # Dummy prediction fallback to prevent crashing before model is trained
-        return 100 
-
-    model = joblib.load(model_path)
-    predicted_demand = model.predict(features)[0]
+    global MODEL
+    if MODEL is None:
+        return 100 # Fallback if model not trained
+    
+    predicted_demand = MODEL.predict(features)[0]
     return max(0, int(predicted_demand))
 
 
@@ -78,12 +90,13 @@ def predict_price(input_date, base_price, capacity, context=None):
     End-to-end prediction pipeline using occupancy-based pricing.
     """
 
-    # Load data & prepare features
-    try:
-        df = load_demand_data()
-    except FileNotFoundError:
-        # Create empty DataFrame with required columns to prevent crashes
-        df = pd.DataFrame(columns=["arrival_date", "bookings"])
+    # Use in-memory data cache
+    global DEMAND_DATA
+    if DEMAND_DATA is None:
+        # Failsafe if initialized late
+        initialize_pipeline()
+        
+    df = DEMAND_DATA
 
     features = prepare_features(df, input_date)
 

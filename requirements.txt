@@ -10,3 +10,4 @@ jupyter
 pydantic
 prophet
 python-multipart
+sqlalchemy

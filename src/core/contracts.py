@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, Dict
 from datetime import date
 
@@ -8,7 +8,7 @@ class DemandRequest(BaseModel):
     capacity: int
     base_price: float
 
-    context: Optional[Dict] = {}    # weather, event, peak_hour, etc.
+    context: Optional[Dict] = Field(default_factory=dict)    # weather, event, peak_hour, etc.
 
 
 class DemandForecast(BaseModel):
