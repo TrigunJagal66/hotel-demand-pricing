@@ -51,18 +51,28 @@ def occupancy_based_price(
 
     if occupancy_ratio < 0.5:
         price = base_price * 0.85
-        explanation.append("Low occupancy detected")
-        explanation.append("Discount applied to stimulate demand")
+        explanation.append("Critical Low occupancy (<50%)")
+        explanation.append("15% deep discount applied to fill rooms")
 
-    elif occupancy_ratio > 0.9:
-        price = base_price * 1.30
-        explanation.append("Demand exceeds capacity")
-        explanation.append("Surge pricing applied due to scarcity")
+    elif occupancy_ratio < 0.75:
+        price = base_price * 0.95
+        explanation.append("Low occupancy (50-70%)")
+        explanation.append("5% small incentive discount applied")
+
+    elif occupancy_ratio < 0.8:
+        price = base_price
+        explanation.append("Healthy occupancy (70-80%)")
+        explanation.append("Standard base price maintained")
+
+    elif occupancy_ratio < 0.9:
+        price = base_price * 1.15
+        explanation.append("High demand detected (80-90%)")
+        explanation.append("15% surge pricing applied")
 
     else:
-        price = base_price
-        explanation.append("Demand and capacity are balanced")
-        explanation.append("Base price retained")
+        price = base_price * 1.30
+        explanation.append("Near full capacity (>90%)")
+        explanation.append("30% peak scarcity pricing applied")
 
     # Connect Context Business Rules!
     if context:

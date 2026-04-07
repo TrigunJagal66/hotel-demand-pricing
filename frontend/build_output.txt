@@ -1,0 +1,13 @@
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+src/api/client.ts(2,10): error TS1484: 'DemandRequest' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/api/client.ts(2,25): error TS1484: 'PricingResponse' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/api/client.ts(2,42): error TS1484: 'PricingLog' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/App.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/pages/Dashboard.tsx(3,10): error TS1484: 'PricingLog' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/pages/History.tsx(3,10): error TS1484: 'PricingLog' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/pages/Recommender.tsx(3,10): error TS1484: 'DemandRequest' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/pages/Recommender.tsx(3,25): error TS1484: 'PricingResponse' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/pages/Recommender.tsx(205,19): error TS2304: Cannot find name 'Calculator'.

@@ -1,9 +1,11 @@
+from typing import List
 from fastapi import FastAPI, HTTPException, Depends
 from datetime import datetime
 import logging
 import json
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.pipeline.predict_pipeline import predict_price, initialize_pipeline
 from src.core.contracts import DemandRequest, PricingResponse
@@ -24,6 +26,17 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="PriceIQ - Demand-Based Pricing API", lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/health")
 def health_check():
     return {
@@ -38,7 +51,7 @@ def root():
 @app.post("/recommend-price", response_model=PricingResponse)
 @app.post("/api/v1/recommend-price", response_model=PricingResponse)
 def recommend_price(payload: DemandRequest, db: Session = Depends(get_db)):
-    MAX_DATE = datetime(2026, 9, 20).date()
+    MAX_DATE = datetime(2026, 10, 7).date()
     if payload.target_date > MAX_DATE:
         raise HTTPException(
             status_code=400, 
@@ -78,3 +91,22 @@ def recommend_price(payload: DemandRequest, db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f"Prediction Error: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="An internal error occurred during prediction.")
+
+@app.get("/api/v1/history", response_model=List[PricingResponse])
+def get_history(db: Session = Depends(get_db)):
+    logs = db.query(PricingLog).order_by(PricingLog.id.desc()).limit(100).all()
+    return [
+        {
+            "id": log.id,
+            "target_date": str(log.target_date),
+            "base_price": log.base_price,
+            "capacity": log.capacity,
+            "predicted_demand": log.predicted_demand,
+            "occupancy_ratio": log.occupancy_ratio,
+            "recommended_price": log.recommended_price,
+            "confidence": log.confidence,
+            "explanation": json.loads(log.explanation) if log.explanation else [],
+            "timestamp": str(log.timestamp)
+        }
+        for log in logs
+    ]

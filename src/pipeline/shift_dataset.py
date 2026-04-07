@@ -23,8 +23,8 @@ def shift_dataset():
     
     print(f"Original Data Span: {df['temp_date'].min().date()} to {df['temp_date'].max().date()}")
     
-    # 468 weeks * 7 days = 3276 days (exact multiple of 52 weeks = 9 years shifted conceptually)
-    shift_days = 3276
+    # 3134 days shift to end on 2026-03-31 (from original 2017-08-31)
+    shift_days = 3134
     df['new_date'] = df['temp_date'] + pd.Timedelta(days=shift_days)
     
     print(f"Modernized Data Span: {df['new_date'].min().date()} to {df['new_date'].max().date()}")
