@@ -42,12 +42,21 @@ export const Dashboard: React.FC = () => {
 
   // Chart Details
   const recentLogs = [...logs].reverse().slice(-10); // get oldest to newest of the last 10
-  const chartData = recentLogs.map(log => ({
-    time: format(new Date(log.timestamp), 'HH:mm'),
-    price: log.recommended_price,
-    demand: log.predicted_demand,
-    capacity: log.capacity,
-  }));
+  const chartData = recentLogs.map(log => {
+    let formattedTime = 'N/A';
+    try {
+      if (log.timestamp) {
+        formattedTime = format(new Date(log.timestamp), 'HH:mm');
+      }
+    } catch (e) {}
+    
+    return {
+      time: formattedTime,
+      price: log.recommended_price,
+      demand: log.predicted_demand,
+      capacity: log.capacity,
+    };
+  });
 
   if (loading) {
     return <div className="text-white flex justify-center items-center h-full">Loading...</div>;

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-from typing import Optional, Dict
-from datetime import date
+from typing import Optional, Dict, List
+from datetime import date, datetime
 
 
 class DemandRequest(BaseModel):
@@ -23,4 +23,11 @@ class PricingResponse(BaseModel):
     occupancy_ratio: float
     recommended_price: float
     confidence: str
-    explanation: list[str]
+    explanation: List[str]
+
+
+class HistoryLogResponse(PricingResponse):
+    id: int
+    timestamp: datetime
+    base_price: float
+    capacity: int

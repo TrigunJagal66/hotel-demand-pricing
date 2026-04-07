@@ -4,35 +4,18 @@ import type { DemandRequest, PricingResponse } from '../types';
 import { format } from 'date-fns';
 import { Loader2, ArrowUpRight, ArrowDownRight, Minus, Check, Calculator } from 'lucide-react';
 import { cn } from '../components/Sidebar';
+import { useFormState } from '../context/FormContext';
 
 export const Recommender: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<PricingResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { 
+    recommenderFormData: formData, 
+    setRecommenderFormData: setFormData,
+    lastResult: result,
+    setLastResult: setResult 
+  } = useFormState();
   
-  const [formData, setFormData] = useState<DemandRequest>(() => {
-    let defaultHotelCode = 'hotel_nyc_01';
-    let defaultCapacity = 200;
-    let defaultPrice = 150.0;
-
-    const savedStr = localStorage.getItem('priceiq_settings');
-    if (savedStr) {
-      try {
-        const saved = JSON.parse(savedStr);
-        if (saved.defaultHotelCode) defaultHotelCode = saved.defaultHotelCode;
-        if (saved.defaultCapacity) defaultCapacity = saved.defaultCapacity;
-        if (saved.defaultPrice) defaultPrice = saved.defaultPrice;
-      } catch (e) {}
-    }
-
-    return {
-      entity_id: defaultHotelCode,
-      target_date: format(new Date(), 'yyyy-MM-dd'),
-      capacity: defaultCapacity,
-      base_price: defaultPrice,
-      context: {},
-    };
-  });
   const [contextStr, setContextStr] = useState('{}');
   const [showContext, setShowContext] = useState(false);
 

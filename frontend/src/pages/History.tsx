@@ -46,13 +46,22 @@ export const History: React.FC = () => {
     document.body.removeChild(a);
   };
 
-  const chartData = [...filteredLogs].reverse().map(l => ({
-    time: format(new Date(l.timestamp), 'MMM dd HH:mm'),
-    occupancy: Number((l.occupancy_ratio * 100).toFixed(1)),
-    basePrice: l.base_price,
-    recommendedPrice: l.recommended_price,
-    delta: l.recommended_price - l.base_price
-  }));
+  const chartData = [...filteredLogs].reverse().map(l => {
+    let formattedTime = 'N/A';
+    try {
+      if (l.timestamp) {
+        formattedTime = format(new Date(l.timestamp), 'MMM dd HH:mm');
+      }
+    } catch (e) {}
+
+    return {
+      time: formattedTime,
+      occupancy: Number((l.occupancy_ratio * 100).toFixed(1)),
+      basePrice: l.base_price,
+      recommendedPrice: l.recommended_price,
+      delta: l.recommended_price - l.base_price
+    };
+  });
 
   if (loading) return <div className="text-white flex justify-center items-center h-full">Loading history...</div>;
 
@@ -143,7 +152,13 @@ export const History: React.FC = () => {
             <tbody>
               {filteredLogs.map((log) => (
                 <tr key={log.id} className="border-b border-navy-700 hover:bg-navy-700/50 transition-colors">
-                  <td className="px-6 py-4">{format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm')}</td>
+                  <td className="px-6 py-4">
+                    {(() => {
+                      try {
+                        return log.timestamp ? format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm') : 'N/A';
+                      } catch (e) { return 'N/A'; }
+                    })()}
+                  </td>
                   <td className="px-6 py-4">{log.target_date}</td>
                   <td className="px-6 py-4">{log.predicted_demand} / {log.capacity}</td>
                   <td className="px-6 py-4">${log.base_price.toFixed(2)}</td>

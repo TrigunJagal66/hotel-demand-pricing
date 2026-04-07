@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.pipeline.predict_pipeline import predict_price, initialize_pipeline
-from src.core.contracts import DemandRequest, PricingResponse
+from src.core.contracts import DemandRequest, PricingResponse, HistoryLogResponse
 from src.core.database import get_db, engine, Base
 from src.core.models import PricingLog
 
@@ -92,7 +92,7 @@ def recommend_price(payload: DemandRequest, db: Session = Depends(get_db)):
         logger.error(f"Prediction Error: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="An internal error occurred during prediction.")
 
-@app.get("/api/v1/history", response_model=List[PricingResponse])
+@app.get("/api/v1/history", response_model=List[HistoryLogResponse])
 def get_history(db: Session = Depends(get_db)):
     logs = db.query(PricingLog).order_by(PricingLog.id.desc()).limit(100).all()
     return [
