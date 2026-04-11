@@ -3,6 +3,6 @@
 
 @layer base {
   body {
-    @apply bg-navy-900 text-white antialiased;
+    @apply bg-slate-100 dark:bg-[#0c0e12] text-slate-900 dark:text-white antialiased transition-colors duration-300;
   }
 }

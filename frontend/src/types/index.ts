@@ -3,6 +3,7 @@ export interface DemandRequest {
   target_date: string; // YYYY-MM-DD
   capacity: number;
   base_price: number;
+  is_holiday?: boolean;
   context?: Record<string, any>;
 }
 

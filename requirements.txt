@@ -11,3 +11,5 @@ pydantic
 prophet
 python-multipart
 sqlalchemy
+xgboost
+holidays

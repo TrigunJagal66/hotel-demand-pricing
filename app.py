@@ -63,6 +63,7 @@ def recommend_price(payload: DemandRequest, db: Session = Depends(get_db)):
             input_date=payload.target_date,
             base_price=payload.base_price,
             capacity=payload.capacity,
+            is_holiday_flag=payload.is_holiday,
             context=payload.context
         )
 

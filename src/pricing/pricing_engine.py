@@ -41,8 +41,13 @@ def occupancy_based_price(
     predicted_demand,
     base_price,
     capacity,
+    is_holiday_flag=False,
     context=None
 ):
+    # Apply baseline demand multiplier if it's a holiday
+    if is_holiday_flag:
+        predicted_demand = int(predicted_demand * 1.10)
+
     occupancy_ratio = predicted_demand / capacity
     explanation = []
 
@@ -74,6 +79,10 @@ def occupancy_based_price(
         explanation.append("Near full capacity (>90%)")
         explanation.append("30% peak scarcity pricing applied")
 
+    if is_holiday_flag:
+        price = price * 1.15
+        explanation.append("Context Override: +15% price surge applied for Local Festival/Holiday")
+
     # Connect Context Business Rules!
     if context:
         event = context.get("event", "").lower()
@@ -88,7 +97,7 @@ def occupancy_based_price(
             explanation.append(f"Context Override: -10% discount applied due to severe weather '{weather}'")
 
     # Confidence (simple, explainable)
-    if occupancy_ratio > 0.9 or occupancy_ratio < 0.5:
+    if occupancy_ratio > 0.8 or occupancy_ratio < 0.5:
         confidence = "high"
     else:
         confidence = "medium"

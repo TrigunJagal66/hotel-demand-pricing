@@ -15,7 +15,7 @@ def run_standalone_prediction():
     """Run an example standalone prediction locally."""
     print("=== Standalone Inference Test ===")
     
-    input_date = datetime(2017, 3, 31)
+    input_date = datetime(2026, 7, 4)  # Independence Day
     base_price = 3000
     capacity = 150
     

@@ -36,7 +36,7 @@ def initialize_pipeline():
 # -----------------------------
 # Feature preparation
 # -----------------------------
-def prepare_features(df, target_date):
+def prepare_features(df, target_date, is_holiday_flag: int):
     """
     Create features for the given prediction date.
     """
@@ -61,6 +61,7 @@ def prepare_features(df, target_date):
         "day_of_week": target_date.weekday(),
         "is_weekend": int(target_date.weekday() >= 5),
         "month": target_date.month,
+        "is_holiday": is_holiday_flag,
         "lag_1": lag_1,
         "lag_7": lag_7,
         "rolling_7": rolling_7,
@@ -85,7 +86,7 @@ def predict_demand(features):
 # -----------------------------
 # End-to-end pricing pipeline
 # -----------------------------
-def predict_price(input_date, base_price, capacity, context=None):
+def predict_price(input_date, base_price, capacity, is_holiday_flag: bool = False, context=None):
     """
     End-to-end prediction pipeline using occupancy-based pricing.
     """
@@ -98,7 +99,8 @@ def predict_price(input_date, base_price, capacity, context=None):
         
     df = DEMAND_DATA
 
-    features = prepare_features(df, input_date)
+    is_hol_int = 1 if is_holiday_flag else 0
+    features = prepare_features(df, input_date, is_hol_int)
 
     # Predict demand
     predicted_demand = predict_demand(features)
@@ -108,6 +110,7 @@ def predict_price(input_date, base_price, capacity, context=None):
         predicted_demand=predicted_demand,
         base_price=base_price,
         capacity=capacity,
+        is_holiday_flag=is_holiday_flag,
         context=context
     )
 

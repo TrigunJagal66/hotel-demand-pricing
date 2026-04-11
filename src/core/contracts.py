@@ -7,6 +7,7 @@ class DemandRequest(BaseModel):
     target_date: date
     capacity: int
     base_price: float
+    is_holiday: bool = False
 
     context: Optional[Dict] = Field(default_factory=dict)    # weather, event, peak_hour, etc.
 

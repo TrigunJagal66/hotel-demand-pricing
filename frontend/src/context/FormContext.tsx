@@ -35,6 +35,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       target_date: format(new Date(), 'yyyy-MM-dd'),
       capacity: defaultCapacity,
       base_price: defaultPrice,
+      is_holiday: false,
       context: {},
     };
   });

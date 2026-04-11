@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calculator, History, Settings, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, Calculator, History, Settings, TrendingUp, Sun, Moon } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useTheme } from '../context/ThemeContext';
 
 // Utility for formatting classes
 export function cn(...inputs: (string | undefined | null | false)[]) {
@@ -17,13 +18,15 @@ const navItems = [
 ];
 
 export const Sidebar: React.FC = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <div className="w-64 h-screen bg-navy-900 border-r border-navy-800 flex flex-col fixed left-0 top-0">
+    <div className="w-64 h-screen bg-slate-50 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col fixed left-0 top-0 transition-colors duration-300 z-50">
       <div className="p-6 flex items-center space-x-3">
-        <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] flex items-center justify-center">
           <TrendingUp className="text-white w-5 h-5" />
         </div>
-        <span className="text-xl font-bold bg-gradient-to-r from-white to-blue-300 bg-clip-text text-transparent">
+        <span className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-emerald-200 bg-clip-text text-transparent">
           PriceIQ
         </span>
       </div>
@@ -35,10 +38,10 @@ export const Sidebar: React.FC = () => {
             to={item.path}
             className={({ isActive }) =>
               cn(
-                "flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200",
+                "flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200",
                 isActive 
-                  ? "bg-blue-600/10 text-blue-400 font-medium" 
-                  : "text-navy-300 hover:bg-navy-800 hover:text-white"
+                  ? "bg-slate-200 dark:bg-emerald-500/10 text-slate-900 dark:text-emerald-400 font-medium" 
+                  : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
               )
             }
           >
@@ -48,10 +51,17 @@ export const Sidebar: React.FC = () => {
         ))}
       </nav>
       
-      <div className="p-4 border-t border-navy-800">
-        <div className="text-xs text-navy-400 text-center">
-          PriceIQ v1.0.0
+      <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div className="text-xs text-slate-500 dark:text-slate-400">
+          PriceIQ v2.0.0
         </div>
+        <button 
+          onClick={toggleTheme} 
+          className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+          title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+        >
+          {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+        </button>
       </div>
     </div>
   );

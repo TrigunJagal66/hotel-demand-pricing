@@ -38,62 +38,62 @@ export const Settings: React.FC = () => {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white">Settings</h1>
-        <p className="text-navy-300 mt-1">Application preferences and defaults.</p>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Settings</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">Application preferences and defaults.</p>
       </div>
 
-      <div className="bg-navy-800 border border-navy-700 rounded-xl p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-white mb-4 border-b border-navy-700 pb-2">Connection Settings</h3>
+      <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">Connection Settings</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-navy-200 mb-1">API Base URL</label>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">API Base URL</label>
             <input 
               type="text" 
               value={settings.baseUrl}
               placeholder="e.g. http://127.0.0.1:8000 (leave blank to use defaults)"
               onChange={e => setSettings({...settings, baseUrl: e.target.value})}
-              className="w-full bg-navy-900 border border-navy-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-50 dark:bg-[#0c0e12] border border-slate-200 dark:border-slate-700 rounded-[8px] px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-inner"
             />
-            <p className="text-xs text-navy-400 mt-1.5">When blank, the system relies on Vite proxy or relative paths.</p>
+            <p className="text-xs text-slate-500 mt-1.5">When blank, the system relies on Vite proxy or relative paths.</p>
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold text-white mt-8 mb-4 border-b border-navy-700 pb-2">Prediction Defaults</h3>
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mt-8 mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">Prediction Defaults</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-navy-200 mb-1">Default Hotel ID</label>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Default Hotel ID</label>
             <input 
               type="text" 
               value={settings.defaultHotelCode}
               onChange={e => setSettings({...settings, defaultHotelCode: e.target.value})}
-              className="w-full bg-navy-900 border border-navy-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-50 dark:bg-[#0c0e12] border border-slate-200 dark:border-slate-700 rounded-[8px] px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-inner"
             />
           </div>
           <div></div>
           <div>
-            <label className="block text-sm font-medium text-navy-200 mb-1">Default Capacity</label>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Default Capacity</label>
             <input 
               type="number" 
               value={settings.defaultCapacity}
               onChange={e => setSettings({...settings, defaultCapacity: Number(e.target.value)})}
-              className="w-full bg-navy-900 border border-navy-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-50 dark:bg-[#0c0e12] border border-slate-200 dark:border-slate-700 rounded-[8px] px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-inner"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-navy-200 mb-1">Default Base Price</label>
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Default Base Price</label>
             <input 
               type="number" 
               value={settings.defaultPrice}
               onChange={e => setSettings({...settings, defaultPrice: Number(e.target.value)})}
-              className="w-full bg-navy-900 border border-navy-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-50 dark:bg-[#0c0e12] border border-slate-200 dark:border-slate-700 rounded-[8px] px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-inner"
             />
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-navy-700 flex justify-between items-center">
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
           <button 
             onClick={handleClearHistory}
-            className="text-red-400 hover:text-red-300 text-sm font-medium flex items-center transition-colors"
+            className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium flex items-center transition-colors"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Reset all settings
@@ -101,10 +101,10 @@ export const Settings: React.FC = () => {
           
           <button 
             onClick={handleSave}
-            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center shadow-md"
+            className="bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-500 hover:to-cyan-600 shadow-[0_0_20px_rgba(16,185,129,0.3)] text-white px-6 py-2 rounded-full font-bold tracking-wide transition-all flex items-center shadow-md"
           >
             <Save className="w-4 h-4 mr-2" />
-            {saved ? "Saved!" : "Save Changes"}
+            {saved ? "Saved! ✓" : "Save Changes"}
           </button>
         </div>
       </div>

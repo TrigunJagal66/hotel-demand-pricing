@@ -1,7 +1,8 @@
 import pandas as pd
 import joblib
 from pathlib import Path
-from sklearn.ensemble import RandomForestRegressor
+import xgboost as xgb
+import holidays
 from sklearn.model_selection import train_test_split
 from datetime import datetime
 
@@ -32,6 +33,9 @@ def preprocess_data(df):
     daily_demand['is_weekend'] = (daily_demand['day_of_week'] >= 5).astype(int)
     daily_demand['month'] = daily_demand['arrival_date'].dt.month
     
+    us_holidays = holidays.US()
+    daily_demand['is_holiday'] = daily_demand['arrival_date'].apply(lambda x: int(x in us_holidays))
+    
     # Lags and windows
     daily_demand['lag_1'] = daily_demand['bookings'].shift(1)
     daily_demand['lag_7'] = daily_demand['bookings'].shift(7)
@@ -48,15 +52,17 @@ def preprocess_data(df):
     
     return daily_demand
 
+# xgBoost model training
+
 def train_and_save_model(df):
-    """Train the RF model and pickle it."""
-    features = ['day_of_week', 'is_weekend', 'month', 'lag_1', 'lag_7', 'rolling_7', 'rolling_14']
+    """Train the XGBoost model and pickle it."""
+    features = ['day_of_week', 'is_weekend', 'month', 'is_holiday', 'lag_1', 'lag_7', 'rolling_7', 'rolling_14']
     X = df[features]
     y = df['bookings']
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    model = xgb.XGBRegressor(n_estimators=100, learning_rate=0.1, max_depth=6, random_state=42)
     model.fit(X_train, y_train)
     
     score = model.score(X_test, y_test)
